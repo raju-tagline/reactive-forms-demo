@@ -1,0 +1,104 @@
+<div class="row justify-content-center m-0 p-0">
+  <div class="col-6">
+    <h4>Reactive Form Demo</h4>
+  </div>
+</div>
+<div class="row justify-content-center m-0 p-0">
+  <div class="col-6">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="row mb-2">
+        <label for="product">Product</label>
+        <select
+          class="form-control"
+          id="product"
+          (change)="changeCity($event)"
+          formControlName="product"
+        >
+          <option selected disabled>Select Product</option>
+          <option
+            *ngFor="let data of productDetailList"
+            [value]="data.product.key"
+          >
+            {{ data?.product?.display_name }}
+          </option>
+        </select>
+      </div>
+      <div class="row mb-2">
+        <label for="category">Category</label>
+        <select
+          class="form-control"
+          id="category"
+          (change)="changeCategory($event)"
+          formControlName="category"
+        >
+          <option selected disabled>Select Category</option>
+          <option *ngFor="let cat of categoryList" [value]="cat.key">
+            {{ cat.display_name }}
+          </option>
+        </select>
+      </div>
+      <!-- <label>
+        {{ errorSubCategoryMessage?.length ? errorSubCategoryMessage : "" }}
+      </label> -->
+      <ng-container>
+        {{ errorSubCategoryMessage?.length ? errorSubCategoryMessage : "" }}
+      </ng-container>
+      <div class="row mb-2">
+        <label for="sub-category">Sub Category</label>
+        <select
+          class="form-control"
+          id="sub-category"
+          (change)="changeSubCategory($event)"
+          formControlName="subCategory"
+        >
+          <option selected disabled>Select Sub-Category</option>
+          <option *ngFor="let data of subCategoryList" [value]="data.key">
+            {{ data.display_name }}
+          </option>
+        </select>
+      </div>
+      <ng-container *ngIf="errorMinPrice?.length">
+        {{ errorMinPrice }}
+      </ng-container>
+      <div class="row mb-2">
+        <label for="min-price">Minimum Price</label>
+        <input
+          type="text"
+          class="form-control"
+          id="min-price"
+          onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"
+          (keyup)="changeMinPrice($event)"
+          formControlName="min_price"
+          ngModel="{{ commaMinPrice }}"
+        />
+      </div>
+      <ng-container *ngIf="errorMaxDiscount?.length">
+        {{ errorMaxDiscount }}
+      </ng-container>
+      <div class="row mb-2">
+        <label for="max-discount">Max Discount</label>
+        <input
+          type="text"
+          id="max-discount"
+          class="form-control"
+          onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"
+          (keyup)="changeMaxDiscount($event)"
+          formControlName="max_discount"
+        />
+      </div>
+      <button class="btn btn-warning" [disabled]="productForm.invalid">
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="row justify-content-center m-0 p-0" *ngIf="finalProduct">
+  <div class="col-6">
+    <h5>product : {{ finalProduct?.product }}</h5>
+    <h5>category : {{ finalProduct?.category }}</h5>
+    <h5>subCategory : {{ finalProduct?.subCategory }}</h5>
+    <h5>min_price : {{ finalProduct?.min_price }}</h5>
+    <h5>max_discount : {{ finalProduct?.max_discount }}</h5>
+  </div>
+</div>
