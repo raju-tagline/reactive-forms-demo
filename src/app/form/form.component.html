@@ -101,9 +101,6 @@
           value="{{ commaMinPrice | number }}"
         />
       </div>
-      <!-- <ng-container
-        *ngIf="accessMinPrice?.errors?.['required'] && accessMinPrice?.touched && accessMinPrice?.pristine && !accessMinPrice?.value?.length"
-      > -->
       <ng-container
         *ngIf="accessMinPrice?.errors?.['required'] && accessMinPrice?.touched && !accessMinPrice?.value?.length"
       >
@@ -137,20 +134,12 @@
     </form>
     <button
       class="btn btn-warning"
-      [disabled]="productForm.invalid"
+      [disabled]="
+      (accessMaxDiscount.errors?.['min']?.['actual'] <= accessMaxDiscount.errors?.['min']?.['min']) && (accessMaxDiscount.errors?.['max']?.['actual'] >= accessMaxDiscount.errors?.['max']?.['max']) && productForm.invalid
+      "
       (click)="onSubmit()"
     >
       Submit
     </button>
-  </div>
-</div>
-
-<div class="row justify-content-center m-0 p-0" *ngIf="finalProduct">
-  <div class="col-4">
-    <h5>product : {{ finalProduct?.product }}</h5>
-    <h5>category : {{ finalProduct?.category }}</h5>
-    <h5>subCategory : {{ finalProduct?.subCategory }}</h5>
-    <h5>min_price : {{ finalProduct?.min_price }}</h5>
-    <h5>max_discount : {{ finalProduct?.max_discount }}</h5>
   </div>
 </div>
