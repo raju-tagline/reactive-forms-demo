@@ -16,6 +16,8 @@ export class FormComponent implements OnInit {
   public errorSubCategoryMessage: any;
   public finalProduct: any;
   public commaMinPrice: any;
+  public commaMaxDiscount: any;
+  public subCatRequired: boolean = false;
 
   constructor() {}
 
@@ -30,7 +32,10 @@ export class FormComponent implements OnInit {
     this.productForm = new FormGroup({
       product: new FormControl('', Validators.required),
       category: new FormControl('', Validators.required),
-      subCategory: new FormControl('', Validators.required),
+      subCategory: new FormControl(
+        '',
+        this.subCatRequired ? Validators.required : null
+      ),
       min_price: new FormControl('', [
         Validators.required,
         Validators.pattern('^[0-9]*$'),
@@ -40,6 +45,26 @@ export class FormComponent implements OnInit {
         Validators.pattern('^[0-9]*$'),
       ]),
     });
+  }
+
+  get accessProduct() {
+    return this.productForm.controls['product'];
+  }
+
+  get accessCategory() {
+    return this.productForm.controls['category'];
+  }
+
+  get accessSubCategory() {
+    return this.productForm.controls['subCategory'];
+  }
+
+  get accessMaxDiscount() {
+    return this.productForm.controls['max_discount'];
+  }
+
+  get accessMinPrice() {
+    return this.productForm.controls['min_price'];
   }
 
   /**
@@ -60,9 +85,11 @@ export class FormComponent implements OnInit {
       (res: any) => res.key === event.target.value
     );
     if (this.categoryList[index].is_subcat_required) {
+      this.subCatRequired = true;
       this.errorSubCategoryMessage = 'Sub-category is required!';
       this.productForm.invalid;
     } else {
+      this.subCatRequired = false;
       this.errorSubCategoryMessage = '';
     }
     this.subCategoryList = this.categoryList[index]?.sub_category;
@@ -79,29 +106,29 @@ export class FormComponent implements OnInit {
   /**
    * changeMinPrice
    */
-  public changeMinPrice(event: any):any {
-    if (this.categoryList?.length) {
-      const index: any = this.categoryList.filter(
-        (res: any) => res.key === this.productForm.value.category
-      );
-      this.productForm.valueChanges.subscribe((res: any) => {
-        if (res && res.min_price) {
-          this.commaMinPrice = event.target.value
-            .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-      });
-      if (event.target.value <= index[0].min_price) {
-        this.errorMinPrice = `Minimum price of product is ${index[0].min_price}`;
-        this.productForm.invalid;
-      } else {
-        this.errorMinPrice = '';
+  public changeMinPrice(event: any): any {
+    // if (this.categoryList?.length) {
+    const index: any = this.categoryList.filter(
+      (res: any) => res.key === this.productForm.value.category
+    );
+    this.productForm.valueChanges.subscribe((res: any) => {
+      if (res && res.min_price) {
+        const str: any = event.target.value.replace(/,/g, '');
+        this.commaMinPrice = str;
       }
-      this.errorMinPrice = '';
+    });
+    const values: any = Number(event.target.value.replace(/,/g, ''));
+    if (values <= index[0].min_price) {
+      this.errorMinPrice = `Minimum price of product is ${index[0].min_price}`;
+      this.productForm.invalid;
     } else {
-      this.errorMinPrice = 'Please select above dropdown!';
-      return (event.target.value = null);
+      this.errorMinPrice = '';
     }
+    //   this.errorMinPrice = '';
+    // } else {
+    //   this.errorMinPrice = 'Please select above dropdown!';
+    //   return (event.target.value = null);
+    // }
   }
 
   /**
@@ -111,7 +138,14 @@ export class FormComponent implements OnInit {
     const index: any = this.categoryList.filter(
       (res: any) => res.key === this.productForm.value.category
     );
-    if (event.target.value >= index[0].max_discount) {
+    this.productForm.valueChanges.subscribe((res: any) => {
+      if (res && res.max_discount) {
+        const str: any = event.target.value.replace(/,/g, '');
+        this.commaMaxDiscount = str;
+      }
+    });
+    const values: any = Number(event.target.value.replace(/,/g, ''));
+    if (values >= index[0].max_discount) {
       this.errorMaxDiscount = `Maxmum discount of product is ${index[0].max_discount}`;
       this.productForm.invalid;
     } else {
@@ -123,10 +157,15 @@ export class FormComponent implements OnInit {
    * onSubmit
    */
   public onSubmit() {
-    if (!this.productForm.valid) {
+    if (
+      !this.productForm.valid &&
+      this.subCatRequired &&
+      !this.subCatRequired
+    ) {
       return;
     } else {
-      this.finalProduct = this.productForm.value;
+      console.log('Product Details :::>> ', this.productForm.value);
+      // this.finalProduct = this.productForm.value;
       this.productForm.reset();
     }
   }

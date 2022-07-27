@@ -5,12 +5,12 @@
 </div>
 <div class="row justify-content-center m-0 p-0">
   <div class="col-6">
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="productForm">
       <div class="row mb-2">
-        <label for="product">Product</label>
+        <label for="product-name">Product</label>
         <select
           class="form-control"
-          id="product"
+          id="product-name"
           (change)="changeCity($event)"
           formControlName="product"
         >
@@ -23,6 +23,9 @@
           </option>
         </select>
       </div>
+      <ng-container *ngIf="accessProduct?.touched && accessProduct?.pristine">
+        <small class="text-danger">Product is required.</small>
+      </ng-container>
       <div class="row mb-2">
         <label for="category">Category</label>
         <select
@@ -37,11 +40,25 @@
           </option>
         </select>
       </div>
-      <!-- <label>
-        {{ errorSubCategoryMessage?.length ? errorSubCategoryMessage : "" }}
-      </label> -->
-      <ng-container>
-        {{ errorSubCategoryMessage?.length ? errorSubCategoryMessage : "" }}
+      <ng-container
+        *ngIf="
+          accessProduct?.value?.length &&
+          accessCategory?.touched &&
+          !accessCategory?.value?.length
+        "
+      >
+        <small class="text-danger">Category is required.</small>
+      </ng-container>
+      <ng-container
+        *ngIf="
+          !accessProduct?.value?.length &&
+          accessCategory?.touched &&
+          accessCategory?.pristine
+        "
+      >
+        <small class="text-danger"
+          >Please select product field to access category.</small
+        >
       </ng-container>
       <div class="row mb-2">
         <label for="sub-category">Sub Category</label>
@@ -57,8 +74,20 @@
           </option>
         </select>
       </div>
-      <ng-container *ngIf="errorMinPrice?.length">
-        {{ errorMinPrice }}
+      <ng-container
+        *ngIf="
+          !accessSubCategory?.value?.length &&
+          accessSubCategory?.touched &&
+          !subCatRequired &&
+          !accessCategory?.value?.length
+        "
+      >
+        <small class="text-danger"
+          >Please select category field to access sub-category.</small
+        >
+      </ng-container>
+      <ng-container *ngIf="subCatRequired && accessSubCategory.touched">
+        <small class="text-danger">{{ errorSubCategoryMessage }}</small>
       </ng-container>
       <div class="row mb-2">
         <label for="min-price">Minimum Price</label>
@@ -69,11 +98,21 @@
           onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"
           (keyup)="changeMinPrice($event)"
           formControlName="min_price"
-          ngModel="{{ commaMinPrice }}"
+          value="{{ commaMinPrice | number }}"
         />
       </div>
-      <ng-container *ngIf="errorMaxDiscount?.length">
-        {{ errorMaxDiscount }}
+      <!-- <ng-container
+        *ngIf="accessMinPrice?.errors?.['required'] && accessMinPrice?.touched && accessMinPrice?.pristine && !accessMinPrice?.value?.length"
+      > -->
+      <ng-container
+        *ngIf="accessMinPrice?.errors?.['required'] && accessMinPrice?.touched && !accessMinPrice?.value?.length"
+      >
+        <small class="text-danger">Min Price is required.</small>
+      </ng-container>
+      <ng-container
+        *ngIf="errorMinPrice?.length && accessMinPrice?.value?.length"
+      >
+        <small class="text-danger">{{ errorMinPrice }}</small>
       </ng-container>
       <div class="row mb-2">
         <label for="max-discount">Max Discount</label>
@@ -84,12 +123,25 @@
           onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"
           (keyup)="changeMaxDiscount($event)"
           formControlName="max_discount"
+          value="{{ commaMaxDiscount | number }}"
         />
       </div>
-      <button class="btn btn-warning" [disabled]="productForm.invalid">
-        Submit
-      </button>
+      <ng-container
+        *ngIf="accessMaxDiscount?.errors?.['required'] && accessMaxDiscount?.touched && !accessMaxDiscount?.value?.length"
+      >
+        <small class="text-danger">Max Discount is required.</small>
+      </ng-container>
+      <ng-container *ngIf="errorMaxDiscount?.length">
+        <small class="text-danger">{{ errorMaxDiscount }}</small>
+      </ng-container>
     </form>
+    <button
+      class="btn btn-warning"
+      [disabled]="productForm.invalid"
+      (click)="onSubmit()"
+    >
+      Submit
+    </button>
   </div>
 </div>
 
