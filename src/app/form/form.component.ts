@@ -107,22 +107,23 @@ export class FormComponent implements OnInit {
    * changeMinPrice
    */
   public changeMinPrice(event: any): any {
-    // if (this.categoryList?.length) {
-    const index: any = this.categoryList.filter(
-      (res: any) => res.key === this.productForm.value.category
-    );
-    this.productForm.valueChanges.subscribe((res: any) => {
-      if (res && res.min_price) {
-        const str: any = event.target.value.replace(/,/g, '');
-        this.commaMinPrice = str;
+    if (this.categoryList?.length) {
+      const index: any = this.categoryList.filter(
+        (res: any) => res.key === this.productForm.value.category
+      );
+      this.productForm.valueChanges.subscribe((res: any) => {
+        if (res && res.min_price) {
+          const str: any = event.target.value.replace(/,/g, '');
+          this.commaMinPrice = str;
+        }
+      });
+      const values: any = Number(event.target.value.replace(/,/g, ''));
+      if (values <= index[0].min_price) {
+        this.errorMinPrice = `Minimum price of product is ${index[0].min_price}`;
+        this.productForm.invalid;
+      } else {
+        this.errorMinPrice = '';
       }
-    });
-    const values: any = Number(event.target.value.replace(/,/g, ''));
-    if (values <= index[0].min_price) {
-      this.errorMinPrice = `Minimum price of product is ${index[0].min_price}`;
-      this.productForm.invalid;
-    } else {
-      this.errorMinPrice = '';
     }
     //   this.errorMinPrice = '';
     // } else {
@@ -135,21 +136,23 @@ export class FormComponent implements OnInit {
    * changeMaxDiscount
    */
   public changeMaxDiscount(event: any) {
-    const index: any = this.categoryList.filter(
-      (res: any) => res.key === this.productForm.value.category
-    );
-    this.productForm.valueChanges.subscribe((res: any) => {
-      if (res && res.max_discount) {
-        const str: any = event.target.value.replace(/,/g, '');
-        this.commaMaxDiscount = str;
+    if (this.categoryList?.length) {
+      const index: any = this.categoryList.filter(
+        (res: any) => res.key === this.productForm.value.category
+      );
+      this.productForm.valueChanges.subscribe((res: any) => {
+        if (res && res.max_discount) {
+          const str: any = event.target.value.replace(/,/g, '');
+          this.commaMaxDiscount = str;
+        }
+      });
+      const values: any = Number(event.target.value.replace(/,/g, ''));
+      if (values >= index[0].max_discount) {
+        this.errorMaxDiscount = `Maxmum discount of product is ${index[0].max_discount}`;
+        this.productForm.invalid;
+      } else {
+        this.errorMaxDiscount = '';
       }
-    });
-    const values: any = Number(event.target.value.replace(/,/g, ''));
-    if (values >= index[0].max_discount) {
-      this.errorMaxDiscount = `Maxmum discount of product is ${index[0].max_discount}`;
-      this.productForm.invalid;
-    } else {
-      this.errorMaxDiscount = '';
     }
   }
 

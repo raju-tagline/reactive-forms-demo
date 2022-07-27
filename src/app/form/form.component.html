@@ -1,10 +1,10 @@
 <div class="row justify-content-center m-0 p-0">
-  <div class="col-6">
+  <div class="col-4">
     <h4>Reactive Form Demo</h4>
   </div>
 </div>
 <div class="row justify-content-center m-0 p-0">
-  <div class="col-6">
+  <div class="col-4">
     <form [formGroup]="productForm">
       <div class="row mb-2">
         <label for="product-name">Product</label>
@@ -146,7 +146,7 @@
 </div>
 
 <div class="row justify-content-center m-0 p-0" *ngIf="finalProduct">
-  <div class="col-6">
+  <div class="col-4">
     <h5>product : {{ finalProduct?.product }}</h5>
     <h5>category : {{ finalProduct?.category }}</h5>
     <h5>subCategory : {{ finalProduct?.subCategory }}</h5>
